@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1586387290512.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "D9AE2B0F",
+    "lastKnownWriteTime" : 1586387955,
+    "last_content_update" : 1586387955186,
+    "path" : "~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/loadParameters.R",
+    "project_path" : "R/loadParameters.R",
+    "properties" : {
+        "cursorPosition" : "13,20",
+        "docOutlineVisible" : "0",
+        "scrollLine" : "3"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

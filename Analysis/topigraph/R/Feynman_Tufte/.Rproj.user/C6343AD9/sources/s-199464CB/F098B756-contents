@@ -1,0 +1,91 @@
+createGraphAndBufferThenFilterAndSendToPeakFinder <- function( parameters, conn, filename, context, subject, channel, seizureUsed, signal_table, cluster_table, timeConstraints, info, correlationWindow ) {
+  # Computes detections for a window of size 'timeConstraints' around a single seizure
+  library( iterators )
+  library( itertools )
+  library( igraph )
+#  library( meftools )
+#  library( sqltools )
+
+  options(stringsAsFactors = FALSE);
+  
+#  cc_threshold <- 0.5 # IIS
+#  cc_threshold <- 0.95
+#  ed_threshold <- 1.5
+  cc_threshold <- parameters$CC_threshold
+  ed_threshold <- parameters$ED_threshold
+  
+  source('~/Dropbox/Documents/Concepts/2018_07_27_meftools/Analysis/meftools/R/MEFcont.R')
+  Rcpp::sourceCpp('~/Dropbox/Documents/Concepts/2018_07_27_meftools/Analysis/meftools/C/decomp_mef.cpp')
+  source('~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/uUTC_from_samp.R')
+  source('~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/filterForSignalType.R')
+  source('~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/findAllPeaksThenIdentifySignalsAndAddToGraph.R')
+#  load(file='~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/findAllPeaksThenIdentifySignalsAndAddToGraph.Rcmp')
+  source('~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/graphInsertBuffer.R')
+#  load(file='~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/graphInsertBuffer.Rcmp')
+  source('~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/databaseInsertBuffer.R')
+#  load(file='~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/databaseInsertBuffer.Rcmp')
+  
+  # parameters  
+  latency <- correlationWindow
+  blackout <- parameters$blackout
+
+  # Set up the graph for this window.
+  masterID <- 0
+  
+  # Initialize the update string ...
+  vineCount <- 1
+  updateLimit <- parameters$database_update_limit  # Check each update to make sure you aren't duplicating entries.
+  fields <- c("subject","channel","seizureUsed","time","waveform","clusterid","peak", "energy", "incident", "weights" )
+  #  dib <- databaseInsertBuffer( conn, signal_table, fields, updateLimit, c('clusterid') )
+  dib <- databaseInsertBuffer( conn, signal_table, fields, updateLimit, 'clusterid' )
+  graph_filename <- paste0( subject, '_', channel, '_', seizureUsed, '_graph.xml' )
+  gib <- graphInsertBuffer( parameters, correlationWindow, cc_threshold, ed_threshold, graph_filename, blackout, dib )
+  
+  # Create the buffer
+  # Buffer, filter and downsample
+  # - create buffer
+  bufferSizePower <- 21
+  bufferSize <- 2^bufferSizePower
+  buffer <- vector( mode='double', length=bufferSize )
+
+  state <- list( conn=conn, latency=latency, parametersNotSet=0, cc_threshold=cc_threshold, ed_threshold=ed_threshold, masterID=masterID, dib=dib, gib=gib, subject=subject, channel=channel, seizureUsed=seizureUsed, signal_table=signal_table, cluster_table=cluster_table, findCliques=0, blackout=blackout  )
+
+  # Processing the file starts here.
+  password_key <- paste0( context$service, '_MEFpassword' )
+  iter_conts <- MEFcont( filename, get_secret(password_key,key=local_key(),vault=get_secret_vault()), bufferSize, window=timeConstraints, info=info )
+  while ( hasNext( iter_conts ) ) { # across contiguous blocks
+    iter_data <- nextElem( iter_conts )
+    while ( hasNext( iter_data ) ) {
+      data <- nextElem( iter_data )
+#      print( length(data) )
+#      print( attr( data, 'blockTime' ) )
+      s0 <- attr( data, 's0' )
+      min_utc = uUTC_from_samp( s0, info$ToC, info$header)
+      max_utc = uUTC_from_samp( s0+length(data), info$ToC, info$header)
+      #      print( s0 )
+#      if ( min_utc > (1560562442581750-40000000) ) { # testing the purge of the graph
+#      if ( s0 >= 12928000 ) { # Trying to debug miswriting of a timestamp
+        # Have these da)ta already been analyzed?
+#        print( gib$max_graph_time() - max_utc )
+        if ( max_utc > gib$max_graph_time() ) { # more to do in this data block
+          # - filter and unpack
+          # Consider packaging this section for each type of signal: filtered <- findPeaksOfType( "IIS", buffer ) or findPeaksOfType( "AP", buffer )
+          #  where "filtered" contains both "filt_data_detect" and "filt_data_keep".
+          #           values <- findPeaksOfType( "IIS", buffer )
+          filteredData <- filterForSignalType( parameters, buffer, data )
+          
+          # print( "Starting findPeaks" )
+          state <- findAllPeaksThenIdentifySignalsAndAddToGraph( parameters, state, filteredData, correlationWindow )
+        }
+#      }
+      rm( data )
+      gc()
+#     }
+    }
+  } # end block
+  state <- gib$persistGraph( state )
+  dib <- state$dib
+  dib$flush()
+  
+  return( state )
+}

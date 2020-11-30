@@ -1,0 +1,36 @@
+{
+    "debugBreakpointsState" : {
+        "breakpoints" : [
+            {
+                "editor_line_number" : 21,
+                "editor_state" : 1,
+                "function_name" : "loadIdentifiersFromDatabaseInfo",
+                "function_steps" : "6",
+                "id" : 1,
+                "is_package_breakpoint" : false,
+                "is_pending_debug_completion" : false,
+                "line_number" : 21,
+                "needs_updated_steps" : false,
+                "package_name" : "",
+                "path" : "~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/loadIdentifiersFromDatabaseInfo.R",
+                "state" : 1,
+                "type" : 0
+            },
+            {
+                "editor_line_number" : 6,
+                "editor_state" : 2,
+                "function_name" : "mef_info",
+                "function_steps" : "",
+                "id" : 2,
+                "is_package_breakpoint" : true,
+                "is_pending_debug_completion" : false,
+                "line_number" : 6,
+                "needs_updated_steps" : false,
+                "package_name" : "meftools",
+                "path" : "~/Dropbox/Documents/Concepts/2018_07_27_meftools/Analysis/meftools/R/mef_info.R",
+                "state" : 2,
+                "type" : 0
+            }
+        ]
+    }
+}

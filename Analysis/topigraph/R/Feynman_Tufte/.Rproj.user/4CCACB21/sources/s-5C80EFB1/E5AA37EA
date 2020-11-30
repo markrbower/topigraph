@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1591677490050.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "E5AA37EA",
+    "lastKnownWriteTime" : 1591677527,
+    "last_content_update" : 1591677527420,
+    "path" : "~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/NPO_fth.Rmd",
+    "project_path" : "NPO_fth.Rmd",
+    "properties" : {
+        "cursorPosition" : "6,23",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

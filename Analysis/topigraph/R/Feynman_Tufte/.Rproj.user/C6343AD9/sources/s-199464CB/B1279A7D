@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1586384646607.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "B1279A7D",
+    "lastKnownWriteTime" : 1586384662,
+    "last_content_update" : 1586384662289,
+    "path" : "~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/NPO.R",
+    "project_path" : "R/NPO.R",
+    "properties" : {
+        "cursorPosition" : "79,0",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 1,
+    "source_on_save" : true,
+    "source_window" : "",
+    "type" : "r_source"
+}

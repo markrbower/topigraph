@@ -1,0 +1,53 @@
+loadParameters <- function( context ) {
+  # variables
+  #   correlationWindow
+  #   blackout
+  #   CC_threshold
+  #   ED_threshold
+  #   waveform_mask
+  #   computation_mask
+  #   database_update_limit
+  #   parms_filter_detect,parms_filter_keep
+  #
+  # var file
+  library( signal )
+  library( stringr )
+  
+  components <- unlist( str_split( context$label, ':::' ) )				# 3 colons
+  p <- unlist( str_split( components[6], '::' ) )    		# 2 colons
+  pp <- unlist( str_split( p, '=') )
+  idx <- seq( from=1, to=length(pp), by=2 )
+  ppp <- pp[idx+1]
+  names(ppp) <- pp[idx]
+
+  # parms <- c( AP_samplingfrequency=32000,AP_correlationWindow=10*1E6,AP_blackout=10E3,AP_CC_threshold=0.95,AP_ED_threshold=1.5,list(AP_waveform_mask=seq(-6,25)),AP_computation_mask=list(seq(4,15)),AP_database_update_limit=100,AP_parms_filter_detect=list(butter( 5, c(.0375,.375), type="pass" )),AP_parms_filter_keep=list(butter( 5, c(.0375,.375), type="pass" )),
+  #             IIS_samplingfrequency=32000,IIS_correlationWindow=60*1E6,IIS_blackout=100E3,IIS_CC_threshold=0.5,IIS_ED_threshold=1.5,IIS_waveform_mask=list(seq(-20,20)),IIS_computation_mask=list(seq(11,30)),IIS_database_update_limit=100,IIS_parms_filter_detect=list(butter( 5, c(.05,.2), type="pass" )),IIS_parms_filter_keep=list(butter( 5, c(.01), type="high" )),
+  #             NV_samplingfrequency=400,NV_correlationWindow=60*1E6,NV_blackout=100E3,NV_CC_threshold=0.5,NV_ED_threshold=1.5,NV_waveform_mask=list(seq(-20,20)),NV_computation_mask=list(seq(11,30)),NV_database_update_limit=100,NV_parms_filter_detect=list(butter( 5, c(.05,.2), type="pass" )),NV_parms_filter_keep=list(butter( 5, c(.01), type="high" ))
+  # )
+  # save(file='~/parms.RData', parms )
+  #
+  #
+  setwd("~")
+  varfile <- 'parms.RData'
+  if (!file.exists(varfile)) {
+    print( 'Please create a parameters file (parms.RData) as described in the loadParameters.R file' )
+    return()
+  } else {
+    load(file=varfile)
+  }
+
+  # select which set of parms to use
+  if ( grepl(ppp['signalType'],'AP') ) { # AP
+    parms <- c(samplingFrequency=unname(parms['AP_samplingfrequency']),correlationWindow=unname(parms['AP_correlationWindow']),blackout=unname(parms['AP_blackout']),CC_threshold=unname(parms['AP_CC_threshold']),ED_threshold=unname(parms['AP_ED_threshold']),waveform_mask=unname(parms['AP_waveform_mask']),computation_mask=unname(parms['AP_computation_mask']),database_update_limit=unname(parms['AP_database_update_limit']),parms_filter_detect=unname(parms['AP_parms_filter_detect']),parms_filter_keep=unname(parms['AP_parms_filter_keep']))
+  } else if ( grepl(ppp['signalType'],'IIS') ) { # home
+    parms <- c(samplingFrequency=unname(parms['IIS_samplingfrequency']),correlationWindow=unname(parms['IIS_correlationWindow']),blackout=unname(parms['IIS_blackout']),CC_threshold=unname(parms['IIS_CC_threshold']),ED_threshold=unname(parms['IIS_ED_threshold']),waveform_mask=unname(parms['IIS_waveform_mask']),computation_mask=unname(parms['IIS_computation_mask']),database_update_limit=unname(parms['IIS_database_update_limit']),parms_filter_detect=unname(parms['IIS_parms_filter_detect']),parms_filter_keep=unname(parms['IIS_parms_filter_keep']))
+  } else if ( grepl(ppp['signalType'],'NV') ) { # home
+    parms <- c(samplingFrequency=unname(parms['NV_samplingfrequency']),correlationWindow=unname(parms['NV_correlationWindow']),blackout=unname(parms['NV_blackout']),CC_threshold=unname(parms['NV_CC_threshold']),ED_threshold=unname(parms['NV_ED_threshold']),waveform_mask=unname(parms['NV_waveform_mask']),computation_mask=unname(parms['NV_computation_mask']),database_update_limit=unname(parms['NV_database_update_limit']),parms_filter_detect=unname(parms['NV_parms_filter_detect']),parms_filter_keep=unname(parms['NV_parms_filter_keep']))
+  } else {
+    print( 'Did not find the appropriate signal type')
+  }
+  
+  parms <- append( parms, list(signalType=unname(ppp['signalType'])) )
+
+  return( parms )
+}

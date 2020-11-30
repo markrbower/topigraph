@@ -1,0 +1,111 @@
+{
+    "debugBreakpointsState" : {
+        "breakpoints" : [
+            {
+                "editor_line_number" : 80,
+                "editor_state" : 1,
+                "function_name" : "NPO",
+                "function_steps" : "32",
+                "id" : 0,
+                "is_package_breakpoint" : false,
+                "is_pending_debug_completion" : false,
+                "line_number" : 80,
+                "needs_updated_steps" : false,
+                "package_name" : "",
+                "path" : "~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/NPO.R",
+                "state" : 1,
+                "type" : 0
+            },
+            {
+                "editor_line_number" : 6,
+                "editor_state" : 1,
+                "function_name" : "MEFthenAnalysisLoopOnDirectory",
+                "function_steps" : "2",
+                "id" : 1,
+                "is_package_breakpoint" : false,
+                "is_pending_debug_completion" : false,
+                "line_number" : 6,
+                "needs_updated_steps" : false,
+                "package_name" : "",
+                "path" : "~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/MEFthenAnalysisLoopOnDirectory.R",
+                "state" : 1,
+                "type" : 0
+            },
+            {
+                "editor_line_number" : 70,
+                "editor_state" : 1,
+                "function_name" : "MEFthenAnalysisLoopOnDirectory",
+                "function_steps" : "19,3,15,3,2,2,3,3,6",
+                "id" : 2,
+                "is_package_breakpoint" : false,
+                "is_pending_debug_completion" : false,
+                "line_number" : 70,
+                "needs_updated_steps" : false,
+                "package_name" : "",
+                "path" : "~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/MEFthenAnalysisLoopOnDirectory.R",
+                "state" : 1,
+                "type" : 0
+            },
+            {
+                "editor_line_number" : 3,
+                "editor_state" : 1,
+                "function_name" : "createGraphAndBufferThenFilterAndSendToPeakFinder",
+                "function_steps" : "2",
+                "id" : 3,
+                "is_package_breakpoint" : false,
+                "is_pending_debug_completion" : false,
+                "line_number" : 3,
+                "needs_updated_steps" : false,
+                "package_name" : "",
+                "path" : "~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/createGraphAndBufferThenFilterAndSendToPeakFinder.R",
+                "state" : 1,
+                "type" : 0
+            },
+            {
+                "editor_line_number" : 78,
+                "editor_state" : 1,
+                "function_name" : "createGraphAndBufferThenFilterAndSendToPeakFinder",
+                "function_steps" : "30,3,3,3,7,3,3",
+                "id" : 4,
+                "is_package_breakpoint" : false,
+                "is_pending_debug_completion" : false,
+                "line_number" : 78,
+                "needs_updated_steps" : false,
+                "package_name" : "",
+                "path" : "~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/createGraphAndBufferThenFilterAndSendToPeakFinder.R",
+                "state" : 1,
+                "type" : 0
+            },
+            {
+                "editor_line_number" : 2,
+                "editor_state" : 1,
+                "function_name" : "findAllPeaksThenIdentifySignalsAndAddToGraph",
+                "function_steps" : "2",
+                "id" : 5,
+                "is_package_breakpoint" : false,
+                "is_pending_debug_completion" : false,
+                "line_number" : 2,
+                "needs_updated_steps" : false,
+                "package_name" : "",
+                "path" : "~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/findAllPeaksThenIdentifySignalsAndAddToGraph.R",
+                "state" : 1,
+                "type" : 0
+            },
+            {
+                "editor_line_number" : 78,
+                "editor_state" : 1,
+                "function_name" : "findAllPeaksThenIdentifySignalsAndAddToGraph",
+                "function_steps" : "36,3,7,3,3",
+                "id" : 6,
+                "is_package_breakpoint" : false,
+                "is_pending_debug_completion" : false,
+                "line_number" : 78,
+                "needs_updated_steps" : false,
+                "package_name" : "",
+                "path" : "~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/findAllPeaksThenIdentifySignalsAndAddToGraph.R",
+                "state" : 1,
+                "type" : 0
+            }
+        ]
+    }
+}

@@ -1,0 +1,500 @@
+   36  cd Analysis/
+   37  cd meftools/
+   38  git commit -m "Finished my lecture on meftools"
+   39  git push
+   40  pwd
+   41  ls
+   42  mkdir inst
+   43  cd inst
+   44  mkdir include
+   45  cd include/
+   46  vi meftools_types.h
+   47  pwd
+   48  cd ../../..
+   49  pwd
+   50  grep -r SEXP *
+   51  ls /Library/Frameworks/R.framework/Versions/4.0/library
+   52  ls /Library/Frameworks/R.framework/Versions/4.0/
+   53  ls /Library/Frameworks/R.framework/Versions/4.0/Resources/lib
+   54  ls /Library/Frameworks/R.framework/Versions/4.0/Resources/library/
+   55  sudo rm -r /Library/Frameworks/R.framework/Versions/4.0/Resources/library/
+   56  r
+   57  pwd
+   58  ls /Library/Frameworks/R.framework/Versions/4.0/Resources/library/
+   59  wd
+   60  pwd
+   61  cd ../..
+   62  ls
+   63  cd 2018_07_27_myPackage/
+   64  ls
+   65  mkdir safe; mv !(safe) safe
+   66  git clone git@github.com:markrbower/myPackage.git
+   67  mv safe/* myPackage
+   68  ls
+   69  rm -rf safe
+   70  ls
+   71  cd myPackage/
+   72  ls
+   73  ls -al
+   74  git add .
+   75  cd Analysis/
+   76  ls -al
+   77  cd myPackage/
+   78  ls -al
+   79  rm -rf
+   80  ls
+   81  ls -al
+   82  rm -rf .git*
+   83  ls -al
+   84  cd ..
+   85  pwd
+   86  ls -al
+   87  cd ..
+   88  ls -al
+   89  git add .
+   90  git commit -M "Initial commit"
+   91  git commit -m "Initial commit"
+   92  git push
+   93  pwd
+   94  ls
+   95  ls Analysis/
+   96  cd Analysis/
+   97  cd myPackage/
+   98  ls
+   99  cd R
+  100  ls
+  101  cd ../src
+  102  ls
+  103  pwd
+  104  cd ..
+  105  ls -al
+  106  pwd
+  107  cd ..
+  108  ls -al
+  109  cd ..
+  110  ls -al
+  111  pwd
+  112  ls
+  113  cd Analysis/
+  114  ls
+  115  ls -al
+  116  cd myPackage/
+  117  ls -al
+  118  ls -al src
+  119  rm src/.git*
+  120  ls R
+  121  ls -al
+  122  ls -al R
+  123  ls -al inst
+  124  cd ..
+  125  cd ..
+  126  ls
+  127  cd ..
+  128  ls
+  129  ls -al
+  130  cd ..
+  131  ls -al
+  132  cd 2018_07_27_myPackage
+  133  ls
+  134  ls -al
+  135  cd myPackage/
+  136  ls -al
+  137  git add .
+  138  git commit -m "Initial commit"
+  139  pwd
+  140  find . -type f -exec touch {} +
+  141  git add .
+  142  git commit -m "Initial commit 2"
+  143  pwd
+  144  git push
+  145  find . -exec touch {} \;
+  146  ls -al
+  147  git add .
+  148  git commit -m "Initial commit"
+  149  pwd
+  150  ls -al
+  151  rm -rf .git
+  152  ls
+  153  mkdir safe;mv !(safe) safe
+  154  git clone git@github.com:markrbower/myPackage.git
+  155  mv safe/* myPackage; rm -rf safe
+  156  ls -al
+  157  cd myPackage/
+  158  ls -al
+  159  git add .
+  160  git commit -m "Initial commit"
+  161  git push
+  162  pwd
+  163  ls
+  164  ls -al
+  165  git add .
+  166  git commit -m "Rcpp::read_header() now works."
+  167  git push
+  168  ls -al
+  169  git add .
+  170  git commit -m "Added @useDynLab to correct the NAMESPACE"
+  171  git push
+  172  cd ~/Dropbox/Documents/Personal/
+  173  ls
+  174  ls Ho*
+  175  ls How*
+  176  gpg --output doc --decrypt HowIFelt_1.rtf.gpg
+  177  gpg --output doc --decrypt HowIFelt_1.rtf.gpg
+  178  gpg --output doc --decrypt HowIFelt_2_2014_08_26.rtf.gpg 
+  179  pwd
+  180  cd ../../..
+  181  ls
+  182  cd 2018_07_27_meftools
+  183  ls
+  184  cd Analysis/
+  185  ls
+  186  cd meftools/
+  187  ls
+  188  ls -al
+  189  rm .RData
+  190  ls -al
+  191  java --version
+  192  R
+  193  pwd
+  194  cd ../../../../..
+  195  pwd
+  196  pwd
+  197  cd 2018_07_29_meftools/
+  198  ls
+  199  mkdir safe;mv !(safe) safe
+  200  git clone git@githublcom:markrbower/meftools.git
+  201  git clone git@githubcom:markrbower/meftools.git
+  202  git clone git@github.com:markrbower/meftools.git
+  203  ls
+  204  rm -rf Analysis/*
+  205  rm -rf mef*
+  206  ls
+  207  rm -rf Analysis/
+  208  ls
+  209  git clone git@github.com:markrbower/meftools.git
+  210  ls
+  211  mv safe/* meftools;rm -rf safe
+  212  cd meftools/
+  213  git add .
+  214  git commit -m "Initial commit"
+  215  git push
+  216  git add .
+  217  git add .
+  218  git commit -m "Added vignettes and tests"
+  219  git push
+  220  git add .
+  221  git commit -m "Removed a large data file."
+  222  git push
+  223  pwd
+  224  ls -al
+  225  git add .
+  226  git commit -m "Removing large files"
+  227  git push
+  228  git rm -r --cached .
+  229  git add .
+  230  git commit -m "Removing large files"
+  231  git push
+  232  ls -al
+  233  rm -rf .git*
+  234  pwd
+  235  cd ..
+  236  pwd
+  237  mkdir safe;mv !(safe) safe
+  238  git clone git@github.com:markrbower/meftools.git
+  239  mv safe/* meftools;rm -rf safe
+  240  cd meftools/
+  241  git add .
+  242  git commit -m "Initial commit"
+  243  git push
+  244  pwd
+  245  cd ../../..
+  246  pwd
+  247  cd 2018_07_29_meftools/
+  248  cd An
+  249  ls
+  250  cd meftools/
+  251  ls
+  252  cd Analysis/
+  253  ls
+  254  cd meftools/
+  255  ls
+  256  cd R
+  257  cd Feynman_Tufte/
+  258  ls -al
+  259  rm .RData
+  260  pwd
+  261  cd ../../../..
+  262  pwd
+  263  cd ../..
+  264  ls
+  265  cd 2020_07_14_topsecret
+  266  ls
+  267  cd topsecret/
+  268  ls-al
+  269  ls -a
+  270  ls -al
+  271  git add .
+  272  git commit -m "Added the get function.
+  273  "
+  274  git push
+  275  pwd
+  276  cd ../..
+  277  cd 2020_08_01_topconnect/
+  278  mkdir safe;mv !(safe) safe
+  279  git clone git@github.com:markrbower/topconnect.git
+  280  mv safe/* topconnect;rm -rf safe
+  281  cd topconnect/
+  282  git add .
+  283  git commit -m "Initial commit"
+  284  git push
+  285  pwd
+  286  git add .
+  287  git commit -m "Added validContext.R"
+  288  git push
+  289  pwd
+  290  git add .
+  291  git commit -m "ProcessedLevel tests succedd"
+  292  git push
+  293  grep -r -F in% *.R
+  294  grep -r -F \!\%in% *.R
+  295  pwd
+  296  git add .
+  297  git commit -m "getContextFromTaskTable passes tests"
+  298  git pus
+  299  git push
+  300  git add .
+  301  git commit -m "Forgot to close RStudio""
+  302  git commit -m "Forgot to close RStudio"
+  303  git push
+  304  pwd
+  305  cd ../..
+  306  cd 2019_11_19_NetworkParameterOutlier
+  307  ls
+  308  ls -al
+  309  touch .her
+  310  touch .here
+  311  rm .her
+  312  pwd
+  313  git add .
+  314  pwd
+  315  cd NPO
+  316  ls -al
+  317  git add .
+  318  git commit -m "Working on getting NPO running"
+  319  git push
+  320  pwd
+  321  pwd
+  322  cd Analysis/NPO/R
+  323  ls
+  324  cd tests
+  325  ls
+  326  cd ..
+  327  cd tests
+  328  ls
+  329  cd testData/
+  330  ls
+  331  cd Halo/
+  332  ls
+  333  cd 11
+  334  pwd
+  335  ls
+  336  ~/Dropbox/Yale/mef_slice/mef_slice
+  337  ~/Dropbox/Yale/mef_slice/mef_slice CSC5.mef CSC6.mef -include_blocks 1 30
+  338  pwd
+  339  ls
+  340  ~/Dropbox/Yale/mef_slice/mef_slice CSC05.mef CSC06.mef -include_blocks 1 30
+  341  ls
+  342  ls -al slice
+  343  ls -al
+  344  rm CSC*.mef
+  345  mv slice/* .
+  346  rmdir slice
+  347  ls
+  348  ls -al
+  349  cd ../../..
+  350  pwd
+  351  ls -al
+  352  cd ../..
+  353  pwd
+  354  cd ..
+  355  ls -al
+  356  git add .
+  357  git commit -m "Added test data. Getting NPO to run."
+  358  git push
+  359  git rm --cached Analysis/NPO/tests/testData/Halo/11/CSC05.mef
+  360  git rm --cached Analysis/NPO/tests/testData/Halo/11/CSC06.mef
+  361  git push
+  362  git rm --cached Analysis/NPO/tests/testData/Halo/11/CSC05.mef
+  363  git rm --cached Analysis/NPO/tests/testData/Halo/11/CSC06.mef
+  364  git commit --amend -CHEAD
+  365  git push
+  366  git rm --cached Analysis/NPO/tests/testData/Halo/11/CSC05.mef
+  367  git rm --cached ./Analysis/NPO/tests/testData/Halo/11/CSC05.mef
+  368  git rm --cached /NPO/tests/testData/Halo/11/CSC05.mef
+  369  git rm --cached Analysis/NPO/tests/testData/Halo/11/CSC05.mef
+  370  git rm --cached ./Analysis/NPO/tests/testData/Halo/11/CSC06.mef
+  371  pwd
+  372  git add .
+  373  git commit --amend -CHEAD
+  374  git push
+  375  pwd
+  376  ls -al
+  377  rm -rf .git*
+  378  rm LICENSE 
+  379  rm NPO.Rmd
+  380  rm README.md 
+  381  ls
+  382  ls -al
+  383  cd ..
+  384  ls
+  385  cd NPO
+  386  ls
+  387  mv Analysis/* .
+  388  ls
+  389  ls -al Analysis/
+  390  rmdir Analysis/
+  391  rm -rf Analysis/
+  392  ls
+  393  cd ..
+  394  pwd
+  395  cd NPO
+  396  pwd
+  397  ls -al
+  398  cd ..
+  399  mv NPO NPO_old
+  400  cd NPO_old/
+  401  ls
+  402  mv NPO/* .
+  403  ls
+  404  pwd
+  405  ls NPO
+  406  rm -rf NPO
+  407  cd ..
+  408  ls
+  409  mv NPO_old Analysis
+  410  ls
+  411  pwd
+  412  cd Analysis/
+  413  ls
+  414  cd ..
+  415  pwd
+  416  mkdir safe;mv !(safe) safe
+  417  ls
+  418  ls safe
+  419  git clone git@github.com:markrbower/NPO.git
+  420  mv safe/* NPO;rm -rf safe
+  421  cd NPO
+  422  git add .
+  423  git commit -m "Initial commit"
+  424  git push
+  425  pwd
+  426  ls -al
+  427  cd ..
+  428  ls -al
+  429  cd NPO
+  430  ls -al
+  431  cd Analysis/
+  432  ls -al
+  433  pwd
+  434  cd ../..
+  435  ls -al
+  436  cd NPO
+  437  ls -al
+  438  ls Analysis/
+  439  pwd
+  440  cd ..
+  441  pwd
+  442  cd NPO
+  443  ls
+  444  ls -al
+  445  cp /Users/markrbower/Dropbox/Documents/Concepts/2020_08_01_topconnect/topconnect/Data .
+  446  cp -r /Users/markrbower/Dropbox/Documents/Concepts/2020_08_01_topconnect/topconnect/Data .
+  447  cp -r /Users/markrbower/Dropbox/Documents/Concepts/2020_08_01_topconnect/topconnect/Literature .
+  448  cp -r /Users/markrbower/Dropbox/Documents/Concepts/2020_08_01_topconnect/topconnect/Presentation .
+  449  cp -r /Users/markrbower/Dropbox/Documents/Concepts/2020_08_01_topconnect/topconnect/README.md .
+  450  ls -al
+  451  ls Literature/
+  452  ls Presentation/
+  453  pwd
+  454  git add .
+  455  git commit -m "Added Data, Lit and Presentation directories."
+  456  git push
+  457  cd Analysis/
+  458  ls -al
+  459  mkdir NPO
+  460  ls NPO
+  461  mv !(NPO) NPO
+  462  ls
+  463  ls -al NPO
+  464  pwd
+  465  cd NPO
+  466  ls -al
+  467  cp -r /Users/markrbower/Dropbox/Documents/Concepts/2020_08_01_topconnect/topconnect/Analysis/topconnect/.Rprofile .
+  468  pwd
+  469  cd ../..
+  470  pwd
+  471  git add .
+  472  git commit -m "Preparing to run the main loop of MEFthen..."
+  473  git push
+  474  pwd
+  475  pwd
+  476  cd ../Concepts/
+  477  ls
+  478  cd 2020_08_01_topconnect/
+  479  cd topconnect/
+  480  ls -al
+  481  git add .
+  482  git commit -m "Changes to getContext..."
+  483  git push
+  484  pwd
+  485  ls -al
+  486  git add .
+  487  git commit -m "Made several changes to mesh with NPO"
+  488  git push
+  489  pwd
+  490  git add .
+  491  git commit -m "databaseInsertBuffer passes test"
+  492  git push
+  493  git add .
+  494  git commit -m "dataUpdateBuffer passes test"
+  495  git push
+  496  git add .
+  497  git commit -m "baseline tests all pass"
+  498  git push
+  499  cd ~/Dropbox/Documents/Concepts/
+  500  grep -r -F ":::" *.R
+  501  grep -r -F ":::" .
+  502  pwd
+  503  grep -r -F "markrbower:::" .
+  504  grep -r -F "Yale:::" .
+  505  pwd
+  506  ls
+  507  cd 2020_08_01_topconnect/
+  508  ls
+  509  ls -al
+  510  cd topconnect/
+  511  ls -al
+  512  pwd
+  513  ls
+  514  ls Analysis/
+  515  cd Analysis/
+  516  ls -al
+  517  ls -al topconnect/
+  518  cd ~/Library/
+  519  ls
+  520  pwd
+  521  cd /Library/
+  522  ls
+  523  cd Frameworks/
+  524  ls
+  525  cd R.framework/
+  526  ls
+  527  cd Resources
+  528  ls
+  529  cd library/
+  530  ls
+  531  rm -rf usingRcppSkeleton/
+  532  pwd
+  533  cd ~/Dropbox/Documents/Concepts/2020_08_10_topigraph/
+  534  ls
+  535  history > tmp

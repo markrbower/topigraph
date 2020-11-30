@@ -1,0 +1,24 @@
+{
+    "id": "C8DA1815",
+    "path": "~/Dropbox/Documents/Concepts/2020_08_10_topigraph/Analysis/topigraph/tests/testthat/test-graphInsertBuffer.R",
+    "project_path": "tests/testthat/test-graphInsertBuffer.R",
+    "type": "r_source",
+    "hash": "563981689",
+    "contents": "",
+    "dirty": false,
+    "created": 1597121995672.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "cursorPosition": "89,33",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1598136483,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1598136483434,
+    "read_only": false,
+    "read_only_alternatives": []
+}
