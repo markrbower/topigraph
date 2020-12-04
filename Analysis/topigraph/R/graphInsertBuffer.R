@@ -227,7 +227,16 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
 
     # Check if these times are already persisted. If so, then update membership IDs.
     # 5 steps: query existing times, match old cliques to new, fill in non-matching cliques, re-map existing cliques, persist.
+    #
+    # New idea: 1. Add the new member and drop too-distal members
+    #           2. Persist if there are enough in the DIB (DIB handles that internally)
+    #           3. Check communities after each addition and just change the label of the newbie.
+    #
     # 1. query existing times
+    #
+    # If "dib" is defined, then that should be used here.
+    # Otherwise, you run out of database connections.
+    #
     if ( !( exists("conn") && !is.null(conn) ) ) {
       conn <- topconnect::db('testProject')
     }
