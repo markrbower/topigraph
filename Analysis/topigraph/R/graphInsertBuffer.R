@@ -1,4 +1,4 @@
-graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, state=NULL ) {
+graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, state=NULL, conn=NULL, P_table=NULL ) {
   #' @export
   #' 
   # Keep a list of events and links. Note those that have slipped beyond the correlation window.
@@ -231,6 +231,8 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
     # New idea: 1. Add the new member and drop too-distal members
     #           2. Persist if there are enough in the DIB (DIB handles that internally)
     #           3. Check communities after each addition and just change the label of the newbie.
+    #    This is too slow. You need to add events in batches, but find communities in subgraphs,
+    #    one new node at a time.
     #
     # 1. query existing times
     #
