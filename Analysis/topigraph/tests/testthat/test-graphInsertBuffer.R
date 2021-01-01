@@ -63,40 +63,95 @@ test_that("IDv for attributes works",{
 test_that("graphInsertBuffer insert works",{
   e1 <- anEvent( 123, c(7,10,9))
   parameters <- list(computationMask=c(1,2,3))
-  gib <- graphInsertBuffer( parameters, 200, .9, 1.5, 'tmp.xml', 2 )
+  conn <- topconnect::db("testProject")
+  if ( file.exists('tmp.xml' ) ) {
+    file.remove( 'tmp.xml' )
+  }
+  gib <- graphInsertBuffer( parameters, 200, .9, 1.5, 'tmp.xml', 2, dib_=NULL,state=NULL, conn=conn )
   gib$insert(e1)
-  # What to test that insert ran?
-  eList <- gib$events()
-  expect_equal( length(eList), 1)
+  e <- gib$getEvents()
+  expect_equal( length(e), 1)
 })
 
-test_that("graphInsertBuffer update works",{
-  e1 <- anEvent( 123, c(7,10,9))
-  e2 <- anEvent( 234, c(10,12,11))
-  e3 <- anEvent( 345, c(9,12,10))
-  e4 <- anEvent( 456, c(9,13,10))
-  e5 <- anEvent( 5567, c(9,12,11)) # Big time diff to push others off graph.
+test_that("adding events to the graph works",{
+  if ( file.exists('tmp.xml' ) ) {
+    file.remove( 'tmp.xml' )
+  }
   parameters <- list(computationMask=c(1,2,3))
-  gib <- graphInsertBuffer( parameters, 250, .9, 1.5, 'tmp.xml', 2 );
-  gib$insert(e1); gib$insert(e2); gib$insert(e3); gib$insert(e4); gib$insert(e5)
-  # e5 should now be in the graph and off the events list  
-  eList <- gib$events()
-  expect_equal( length(eList), 1)
+  fields <- c("subject","UUID","channel","seizureUsed","time","waveform","clusterid","peak", "energy", "incident", "weights" )
+  dib <- topconnect::databaseInsertBuffer(conn,"P",fields,limit=5,updates=NULL)
+  state <- list(subject='bb8', session='02563349-e614-4a87-8d25-242496dcab8d', channel="A1", seizureUsed=1000 )
+  conn <- topconnect::db("testProject")
+  gib <- graphInsertBuffer( parameters, cw=200, cc=.8, ed=1.5, gf='tmp.xml', blackout=2, dib_=dib,state=state, conn=conn )
+  
+  e1 <- anEvent( 121, c(7,10,9) )
+  e2 <- anEvent( 232, c(11,12,13) )
+  e3 <- anEvent( 243, c(11,12,14) )
+  gib$insert(e1);gib$insert(e2);gib$insert(e3)
+  E <- gib$getEvents()
+  expect_equal( length(E), 3 )
+  L <- gib$getLinks()
+  expect_equal( length(L), 1 )
+  grph <- gib$export()
+  expect_equal( length(V(grph)), 0 )
+  expect_equal( length(E(grph)), 0 )
+  e4 <- anEvent( 304, c(7,10,9) )
+  e5 <- anEvent( 365, c(11,12,11) )
+  e6 <- anEvent( 386, c(11,14,13) )
+  gib$insert(e4);gib$insert(e5);gib$insert(e6)
+  e7 <- anEvent( 407, c(7,10,10) )
+  e8 <- anEvent( 468, c(11,11,13) )
+  e9 <- anEvent( 489, c(11,10,15) )
+  gib$insert(e7);gib$insert(e8);gib$insert(e9)
+  E <- gib$getEvents()
+  expect_equal( length(E), 4 )
+  L <- gib$getLinks()
+  expect_equal( length(L), 5 )
+  grph <- gib$export()
+  expect_equal( length(V(grph)), 5 )
+  expect_equal( length(E(grph)), 2 )
 })
 
-test_that("graphInsertBuffer append works",{
-  e1 <- anEvent( 123, c(7,10,9))
-  e2 <- anEvent( 234, c(10,12,11))
-  e3 <- anEvent( 345, c(9,12,10))
-  e4 <- anEvent( 456, c(9,13,10))
-  e5 <- anEvent( 5567, c(9,12,11)) # Big time diff to push others off graph.
+test_that("adding elements to database works",{
+  if ( file.exists('tmp.xml' ) ) {
+    file.remove( 'tmp.xml' )
+  }
+  conn <- topconnect::db("testProject")
+  query <- 'truncate P;'
+  rs <- DBI::dbGetQuery( conn, query )
+  
   parameters <- list(computationMask=c(1,2,3))
-  gib <- graphInsertBuffer( parameters, 250, .9, 1.5, 'tmp.xml', 2 );
-  gib$insert(e1); gib$insert(e2); gib$insert(e3); gib$insert(e4); gib$insert(e5)
-  # e1 should now be in the graph and off the events list
-  e6 <- anEvent( 5667, c(8,1,9) )
-  gib$insert( e6 )
-  eList <- gib$events()
-  expect_equal( length(eList), 2)
+  fields <- c("subject","UUID","channel","seizureUsed","time","waveform","clusterid","peak", "energy", "incident", "weights" )
+  dib <- topconnect::databaseInsertBuffer(conn,"P",fields,limit=2,updates=NULL)
+  state <- list(subject='bb8', session='02563349-e614-4a87-8d25-242496dcab8d', channel="A1", seizureUsed=1000 )
+  gib <- graphInsertBuffer( parameters, cw=200, cc=.8, ed=1.5, gf='tmp.xml', blackout=2, dib_=dib,state=state, conn=conn )
+  
+  e1 <- anEvent( 121, c(7,10,9) )
+  e2 <- anEvent( 232, c(11,12,13) )
+  e3 <- anEvent( 243, c(11,12,14) )
+  gib$insert(e1);gib$insert(e2);gib$insert(e3)
+  e4 <- anEvent( 304, c(7,10,9) )
+  e5 <- anEvent( 365, c(11,12,11) )
+  e6 <- anEvent( 386, c(11,14,13) )
+  gib$insert(e4);gib$insert(e5);gib$insert(e6)
+  e7 <- anEvent( 407, c(7,10,10) )
+  e8 <- anEvent( 468, c(11,11,13) )
+  e9 <- anEvent( 839, c(11,10,15) ) # Store/drop e1 & e2. Should activate database.
+  gib$insert(e7);gib$insert(e8)
+  gib$insert(e9)
+  query <- 'select * from P;'
+  rs <- DBI::dbGetQuery( conn, query )
+  expect_equal( nrow(rs), 2 )
+  e10 <- anEvent( 940, c(11,10,17) )
+  gib$insert(e10)
+  query <- 'select * from P;'
+  rs <- DBI::dbGetQuery( conn, query )
+  expect_equal( nrow(rs), 4 )
 })
+
+
+
+
+
+
 
