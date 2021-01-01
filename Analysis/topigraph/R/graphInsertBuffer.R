@@ -131,8 +131,6 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
       if ( length(idx_PB) >= dib$updateNumber() ) {
         transferFromGraphToDIB( idx_PB )
       }
-      # drop all nodes at once. Clear all memory for dropped nodes and links.
-      grph <<- igraph::induced_subgraph(grph, as.numeric(V(grph)$name)>=tPersist,impl="auto")
       
     } # name is unique
   }
@@ -240,6 +238,8 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
       
       dib$insert( list(subject=state$subject, UUID=state$session, channel=state$channel, seizureUsed=state$seizureUsed, time=tCN, waveform=waveform, peak=peak, energy=energy, clusterid=clusterid, incident=str_incident, weights=str_weights ) )
     }
+    # drop all nodes at once. Clear all memory for dropped nodes and links.
+    grph <<- igraph::induced_subgraph(grph, setdiff( V(grph), idx_PersistBucket ),impl="auto" )
   }
   
   flush <- function() {
@@ -248,10 +248,11 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
     # 2) reversing order of adding nodes to DIB and flusing events + links.
 
     # flush the events and links lists
-    addEventsAndLinksToGraph()
+    addEventsAndLinksToGraph( events[order(as.numeric(unlist(names(events))),decreasing=FALSE)] )
 
     # Add vertices to the DIB.
-    transferFromGraphToDIB()
+    idx_PB <- seq( 1, length(V(grph)) )
+    transferFromGraphToDIB( idx_PB )
     
     # flush the DIB
     dib$flush()
