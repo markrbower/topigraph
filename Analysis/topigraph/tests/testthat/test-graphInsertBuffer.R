@@ -71,6 +71,8 @@ test_that("graphInsertBuffer insert works",{
   gib$insert(e1)
   e <- gib$getEvents()
   expect_equal( length(e), 1)
+  
+  dbDisconnect( conn )
 })
 
 test_that("adding events to the graph works",{
@@ -110,6 +112,8 @@ test_that("adding events to the graph works",{
   grph <- gib$export()
   expect_equal( length(V(grph)), 5 )
   expect_equal( length(E(grph)), 2 )
+  
+  dbDisconnect( conn )
 })
 
 test_that("adding elements to database works",{
@@ -147,6 +151,8 @@ test_that("adding elements to database works",{
   query <- 'select * from P;'
   rs <- DBI::dbGetQuery( conn, query )
   expect_equal( nrow(rs), 4 )
+  
+  dbDisconnect( conn )
 })
 
 test_that("flushing the database works",{
@@ -191,11 +197,30 @@ test_that("flushing the database works",{
   rs <- DBI::dbGetQuery( conn, query )
   expect_equal( nrow(rs), 10 )
   
+  dbDisconnect( conn )
 })
 
+test_that("reconstructing the database works",{
+  conn <- topconnect::db("testProject")
 
+  # Create the GRB
+  grb <- graphReconstructBuffer( conn, P_table="P", subject="bb8", channel="A1", seizureUsed=1000 )
 
+  # Request a clusterid=1
+  grph <- grb$reconstruct( clusterid=1 )
+  expect_equal( length(V(grph)), 4 )      
+  
+  # Request a clusterid=2
+  grph <- grb$reconstruct( clusterid=1 )
+  expect_equal( length(V(grph)), 2 )      
+  
+  # Request a clusterid=3
+  grph <- grb$reconstruct( clusterid=1 )
+  expect_equal( length(V(grph)), 1 )      
+  
+  # Request a clusterid=1
+  grph <- grb$reconstruct( clusterid=4 )
+  expect_equal( length(V(grph)), 1 )      
 
-
-
+})
 

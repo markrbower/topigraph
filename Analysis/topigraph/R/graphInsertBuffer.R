@@ -187,9 +187,10 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
       # needed: incident, weights
       edz <- incident( grph_clique, IDv(grph_clique, tCN) )
       enz <- ends( grph_clique, edz )
-      keep_idx <- which( enz != tCN )
-      incident <- enz[keep_idx]
-      str_incident <- paste0( incident, collapse=',' )
+#      keep_idx <- which( enz != tCN )
+#      incident <- enz[keep_idx]
+#      str_incident <- paste0( incident, collapse=',' )
+      str_incident <- paste0( enz, collapse=',' )
       weights <- edz$weight
       str_weights <- paste0( weights, collapse="," )
       grph <<- igraph::set.vertex.attribute(grph,'incident',IDv(grph,tCN),value=str_incident)
