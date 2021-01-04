@@ -65,6 +65,10 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
 
     # node names should be unique
     if ( !( names(event) %in% names(events) ) ) {
+#      str_incident_list <- list()
+#      str_incident_graph <- list()
+#      str_weights_list <- list()
+#      str_weights_graph <- list()
       # Form links with other events in the list.
       if ( length(events) > 0 ) {
         # Link to other events in the list.
@@ -76,11 +80,14 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
           all_times <- as.numeric( names( events[possible_links_events] ) )
           wavevec <- t( sapply( events[possible_links_events], function(x) t(unname(as.numeric(unlist(x)))) ) )
           cc <- sapply( seq(1,nrow(wavevec)), function(x) cor( wavevec_event[mask], wavevec[x,mask] ) )
+          weights <- sapply( seq(1,length(cc)), function(x) ((1+cc[x])/2) )
           ed <- sapply( seq(1,nrow(wavevec)), function(x) energy_event / sqrt(sum(wavevec[x,mask]*wavevec[x,mask])) )
           idxs <- which( (cc>cc_th | cc<(-1*cc_th)) & ed<ed_th & ed>(1/ed_th) ) # these are idx's in 'possible_links'
           if ( length(idxs) > 0 ) {
             # Add the links
-            new_links <- lapply( idxs, function(x) aLink( as.character(t_event), as.character(all_times[x]),((1+cc[x])/2)))
+#            str_incident_list <- paste0( as.character(sapply( idxs, function(x) all_times[x])), collapse="," )
+#            str_weights_list <- paste0( as.character(sapply( idxs, function(x) weights[x])), collapse="," )
+            new_links <- lapply( idxs, function(x) aLink( as.character(t_event), as.character(all_times[x]), weights[x]) )
             links <<- append( links, unlist(new_links) )
           } # length(idxs) > 0, which means there are valid indices to which to link.
         } # length(idxs) > 0, which means there are valid indices to which to link.
@@ -88,20 +95,42 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
       
       # link to graph
       # Form links with events in the graph
-      tg <- V(grph)$name[ V(grph)$name > (t_event-CW) & V(grph)$name < (t_event-blackout) ]
+      tg <- V(grph)$name[ as.numeric(V(grph)$name) > (t_event-CW) & as.numeric(V(grph)$name) < (t_event-blackout) ]
       if ( length(tg) > 0 ) { # then there is some link to make
         # Compute, filter and link
         wavevec <- sapply( seq(1,length(tg)), function(x) csv2vec(igraph::get.vertex.attribute( grph, 'waveform', IDv(grph,tg[x]))))
 #        print( paste0( "nrow of wavevec: ", ncol(wavevec)))
         cc <- sapply( seq(1,ncol(wavevec)), function(x) cor( wavevec_event[mask], wavevec[mask,x] ) )
+        weights <- sapply( seq(1,length(cc)), function(x) ((1+cc[x])/2) )
         ed <- sapply( seq(1,ncol(wavevec)), function(x) energy_event / sqrt(sum(wavevec[mask,x]*wavevec[mask,x])) )
         idxs <- which( (cc>cc_th | cc<(-1*cc_th)) & ed<ed_th & ed>(1/ed_th) ) # these are idx's in 'possible_links'
         if ( length(idxs) > 0 ) {
           # Add the links
+          weights <- sapply( idxs, function(x) ((1+cc[x])/2) )
+#          str_incident_graph <- paste0( as.character(sapply( idxs, function(x) tg[x])), collapse="," )
+#          str_weights_graph <- paste0( as.character(sapply( idxs, function(x) weights[x])), collapse="," )
           new_links <- lapply( idxs, function(x) aLink( as.character(t_event), as.character(tg[x]),((1+cc[x])/2)))
           links <<- append( links, unlist(new_links) )
         } # length(idxs) > 0, which means there are valid indices to which to link.
       } # elements with delay > blackout
+
+#      str_incident <- list()
+#      if ( length(str_incident_list)>0 ) {
+#        str_incident <- append( str_incident, str_incident_list )
+#      }
+#      if ( length(str_incident_graph)>0 ) {
+#        str_incident <- append( str_incident, str_incident_graph )
+#      }
+#      attr( event, 'incident' ) <- str_incident
+#
+#      str_weights <- list()
+#      if ( length(str_weights_list)>0 ) {
+#        str_weights <- append( str_weights, str_weights_list )
+#      }
+#      if ( length(str_weights_graph)>0 ) {
+#        str_weights <- append( str_weights, str_weights_graph )
+#      }
+#      attr( event, 'weights' ) <- str_weights
       
       # Add new nodes to eventList.
       events <<- append( events, event )
@@ -147,20 +176,20 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
     grph_ <- NULL
     # Add links
     edge_list <- paste0( names(links), collapse=',')
-    print( edge_list )
+#    print( edge_list )
     edge_vec <- csv2vec( edge_list )
     if ( length(edge_vec) %% 2 != 0 ) {
       print( "Error 1" )
       print( edge_vec )
     }
     id <- IDv( grph, edge_vec )
-    print( id )
+#    print( id )
     if ( length(id) %% 2 != 0 ) {
       print( "Error 2" )
       print( id )
     }
     tryCatch({
-      print( paste0( id ) )
+#      print( paste0( id ) )
       grph <<- igraph::add_edges( grph, id, weight=as.vector(unlist(links)) )
 #      print( paste0( links ) )
 #      grph <<- igraph::set_edge_attr( grph, 'weight', index=E(grph), value=as.vector(unlist(links)) )
@@ -172,54 +201,56 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
   computeMembership <- function( idx_computeMembership ) {
     for ( idx in idx_computeMembership ) {
       tCN <- as.numeric( get.vertex.attribute(grph,'name',idx) )
-      #    	create a sub-graph of nodes within the CW of CN
-      sub_grph <- igraph::induced_subgraph(grph, ( as.numeric(V(grph)$name)>=(tCN-CW) & as.numeric(V(grph)$name)<=(tCN+CW)),impl="auto")
-      #    	compute communities
-      sub_cliques <- cluster_louvain( sub_grph, weight=igraph::get.edge.attribute(sub_grph, 'weight' ) )
-      # sub_cliques_i <- cluster_infomap( sub_grph, e.weights=igraph::get.edge.attribute(grph, 'weight' ) )
-      # sub_cliques_w <- cluster_walktrap( sub_grph, weights=igraph::get.edge.attribute(grph, 'weight' ) 
-      # sub_cliques_f <- cluster_fast_greedy( sub_grph, weights=igraph::get.edge.attribute(grph, 'weight' ), membership = TRUE )
-      sub_cliques_membership <- membership( sub_cliques )
-      clusterid <- sub_cliques_membership[as.numeric(names(sub_cliques_membership))==tCN]
-      member_idx <- which( sub_cliques_membership == clusterid )
-      grph_clique <- igraph::induced_subgraph(sub_grph, member_idx )
-      
-      # needed: incident, weights
-      edz <- incident( grph_clique, IDv(grph_clique, tCN) )
-      enz <- ends( grph_clique, edz )
-#      keep_idx <- which( enz != tCN )
-#      incident <- enz[keep_idx]
-#      str_incident <- paste0( incident, collapse=',' )
-      str_incident <- paste0( enz, collapse=',' )
-      weights <- edz$weight
-      str_weights <- paste0( weights, collapse="," )
-      grph <<- igraph::set.vertex.attribute(grph,'incident',IDv(grph,tCN),value=str_incident)
-      grph <<- igraph::set.vertex.attribute(grph,'weights',IDv(grph,tCN),value=str_weights)
-      
-      #    	count votes of nodes with same membership. If 0, use current. If tie, take lowest ID
-      clique_memberships <- unlist( get.vertex.attribute(grph_clique,name='membership',index=V(grph_clique)) )
-      validids <- seq( 1, length( V(grph_clique) ) )
-      if ( !( is.null(clique_memberships) ) & (length( which(!is.na(clique_memberships)) )>0 ) ) { # at lest some of the vertices have memberships. Use these.
-        validids <- validids[ which( !is.na(clique_memberships) ) ]
-        clusterid <- as.numeric(names(sort(table(clique_memberships[validids],useNA="no"),decreasing=TRUE)[1]))
-      } else { # find the next, available clusterid from the database and grph.
-        clusterid <- 0
-        # Check the databasea
-        query <- paste0( "select max(clusterid) as max_database from P;")
-        rs <- DBI::dbGetQuery( conn, query )
-        if ( nrow(rs) > 0 & !is.na(rs$max_database) ) {
-          clusterid <- rs$max_database
+      # Check that membership has not already been computed
+      if ( is.na(get.vertex.attribute( grph, 'membership', idx )) ) {
+        #    	create a sub-graph of nodes within the CW of CN
+        sub_grph <- igraph::induced_subgraph(grph, ( as.numeric(V(grph)$name)>=(tCN-CW) & as.numeric(V(grph)$name)<=(tCN+CW)),impl="auto")
+        #    	compute communities
+        sub_cliques <- cluster_louvain( sub_grph, weight=igraph::get.edge.attribute(sub_grph, 'weight' ) )
+        # sub_cliques_i <- cluster_infomap( sub_grph, e.weights=igraph::get.edge.attribute(grph, 'weight' ) )
+        # sub_cliques_w <- cluster_walktrap( sub_grph, weights=igraph::get.edge.attribute(grph, 'weight' ) 
+        # sub_cliques_f <- cluster_fast_greedy( sub_grph, weights=igraph::get.edge.attribute(grph, 'weight' ), membership = TRUE )
+        sub_cliques_membership <- membership( sub_cliques )
+        clusterid <- sub_cliques_membership[as.numeric(names(sub_cliques_membership))==tCN]
+        member_idx <- which( sub_cliques_membership == clusterid )
+        grph_clique <- igraph::induced_subgraph(sub_grph, member_idx )
+        
+        # needed: incident, weights
+        edz <- incident( grph_clique, IDv(grph_clique, tCN) )
+        enz <- ends( grph_clique, edz )
+        weights <- edz$weight
+        mat <- cbind( enz, weights )
+        keep_idx <- which( as.numeric(mat[,2]) == tCN )
+        str_incident <- paste0( mat[keep_idx,1], collapse=',' )
+        str_weights <- paste0( mat[keep_idx,3], collapse=',' )
+        grph <<- igraph::set.vertex.attribute(grph,'incident',IDv(grph,tCN),value=str_incident)
+        grph <<- igraph::set.vertex.attribute(grph,'weights',IDv(grph,tCN),value=str_weights)
+        
+        #    	count votes of nodes with same membership. If 0, use current. If tie, take lowest ID
+        clique_memberships <- unlist( get.vertex.attribute(grph_clique,name='membership',index=V(grph_clique)) )
+        validids <- seq( 1, length( V(grph_clique) ) )
+        if ( !( is.null(clique_memberships) ) & (length( which(!is.na(clique_memberships)) )>0 ) ) { # at lest some of the vertices have memberships. Use these.
+          validids <- validids[ which( !is.na(clique_memberships) ) ]
+          clusterid <- as.numeric(names(sort(table(clique_memberships[validids],useNA="no"),decreasing=TRUE)[1]))
+        } else { # find the next, available clusterid from the database and grph.
+          clusterid <- 0
+          # Check the databasea
+          query <- paste0( "select max(clusterid) as max_database from P;")
+          rs <- DBI::dbGetQuery( conn, query )
+          if ( nrow(rs) > 0 & !is.na(rs$max_database) ) {
+            clusterid <- rs$max_database
+          }
+          # Check the graph
+          grph_memberships <- unlist( get.vertex.attribute(grph,name='membership',index=V(grph)) )
+          if ( !is.null(grph_memberships) & (length( which(!is.na(grph_memberships)) )>0 ) ) {
+            max_graph <- max( grph_memberships, na.rm=TRUE )
+          } else {
+            max_graph <- -1
+          }
+          clusterid <- max( clusterid, max_graph ) + 1
         }
-        # Check the graph
-        grph_memberships <- unlist( get.vertex.attribute(grph,name='membership',index=V(grph)) )
-        if ( !is.null(grph_memberships) & (length( which(!is.na(grph_memberships)) )>0 ) ) {
-          max_graph <- max( grph_memberships, na.rm=TRUE )
-        } else {
-          max_graph <- -1
-        }
-        clusterid <- max( clusterid, max_graph ) + 1
+        grph <<- set.vertex.attribute( grph, 'membership', idx, clusterid )
       }
-      grph <<- set.vertex.attribute( grph, 'membership', idx, clusterid )
     }
   }
   
@@ -250,9 +281,10 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
 
     # flush the events and links lists
     addEventsAndLinksToGraph( events[order(as.numeric(unlist(names(events))),decreasing=FALSE)] )
-
+    
     # Add vertices to the DIB.
     idx_PB <- seq( 1, length(V(grph)) )
+    computeMembership( idx_PB )
     transferFromGraphToDIB( idx_PB )
     
     # flush the DIB

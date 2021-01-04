@@ -1,5 +1,21 @@
 {
     "debugBreakpointsState": {
-        "breakpoints": []
+        "breakpoints": [
+            {
+                "id": 12,
+                "path": "~/Dropbox/Documents/Concepts/2020_08_10_topigraph/topigraph/Analysis/topigraph/R/graphInsertBuffer.R",
+                "line_number": 80,
+                "function_steps": "20,3,3,5,3,2,3,4,3,2",
+                "function_name": "graphInsertBuffer",
+                "state": 1,
+                "editor_state": 1,
+                "editor_line_number": 80,
+                "is_pending_debug_completion": false,
+                "needs_updated_steps": false,
+                "type": 0,
+                "is_package_breakpoint": true,
+                "package_name": "topigraph"
+            }
+        ]
     }
 }

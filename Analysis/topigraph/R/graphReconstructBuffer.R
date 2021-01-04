@@ -19,13 +19,12 @@ graphReconstructBuffer <- function( conn, P_table, subject, channel, seizureUsed
       igraph::add_vertices( nrow(rs), name=rs$time, membership=clusterid, waveform=rs$waveform )
     
     # Use 'incident' and 'weights' to remake the links?
-    edz <- IDv( grph, csv2vec( rs$incident) )
-    edz <- matrix( edz, ncol=2, byrow=TRUE )
-    edz <- cbind( edz, csv2vec( rs$weights ) )
-    if ( nrow(edz) > 0 & !is.na(edz[1,3]) ) {
-      edz <- edz[ edz[,2] > edz[,1], ]
-      grph <<- igraph::add_edges( grph, edges=as.vector( t(edz[,1:2]) ), weight=edz[,3] )
-    }
+    edz_vec <- csv2vec( rs$incident )
+    edz <- IDv( grph, csv2vec( paste0( paste0( edz_vec, collapse=paste0(',',rs$time,',')), ',', rs$time ) ) )
+#    edz <- matrix( edz, ncol=2, byrow=TRUE )
+#    edz <- cbind( edz, csv2vec( rs$weights ) )
+    grph <<- igraph::add.edges( grph, edz, csv2vec(rs$weights) )
+    
     grph <<- igraph::simplify(grph)
   }
 

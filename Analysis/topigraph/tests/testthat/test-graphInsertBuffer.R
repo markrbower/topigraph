@@ -72,7 +72,7 @@ test_that("graphInsertBuffer insert works",{
   e <- gib$getEvents()
   expect_equal( length(e), 1)
   
-  dbDisconnect( conn )
+  DBI::dbDisconnect( conn )
 })
 
 test_that("adding events to the graph works",{
@@ -113,7 +113,7 @@ test_that("adding events to the graph works",{
   expect_equal( length(V(grph)), 5 )
   expect_equal( length(E(grph)), 2 )
   
-  dbDisconnect( conn )
+  DBI::dbDisconnect( conn )
 })
 
 test_that("adding elements to database works",{
@@ -152,7 +152,7 @@ test_that("adding elements to database works",{
   rs <- DBI::dbGetQuery( conn, query )
   expect_equal( nrow(rs), 4 )
   
-  dbDisconnect( conn )
+  DBI::dbDisconnect( conn )
 })
 
 test_that("flushing the database works",{
@@ -197,7 +197,7 @@ test_that("flushing the database works",{
   rs <- DBI::dbGetQuery( conn, query )
   expect_equal( nrow(rs), 10 )
   
-  dbDisconnect( conn )
+  DBI::dbDisconnect( conn )
 })
 
 test_that("reconstructing the database works",{
