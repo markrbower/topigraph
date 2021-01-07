@@ -176,24 +176,27 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
     grph_ <- NULL
     # Add links
     edge_list <- paste0( names(links), collapse=',')
-#    print( edge_list )
-    edge_vec <- csv2vec( edge_list )
-    if ( length(edge_vec) %% 2 != 0 ) {
-      print( "Error 1" )
-      print( edge_vec )
+    if ( nchar(edge_list) > 0 ) {
+      edge_vec <- csv2vec( edge_list )
+      if ( length(edge_vec) %% 2 != 0 ) {
+        print( "Error 1" )
+        print( edge_vec )
+      }
+      id <- IDv( grph, edge_vec )
+      #    print( id )
+      if ( length(id) %% 2 != 0 ) {
+        print( "Error 2" )
+        print( id )
+      }
+      tryCatch({
+        #      print( paste0( id ) )
+        if ( (length(edge_vec) %% 2 == 0) & (( length(id) %% 2 == 0 )) ) {
+          grph <<- igraph::add_edges( grph, id, weight=as.vector(unlist(links)) )
+        }
+        #      print( paste0( links ) )
+        #      grph <<- igraph::set_edge_attr( grph, 'weight', index=E(grph), value=as.vector(unlist(links)) )
+      })
     }
-    id <- IDv( grph, edge_vec )
-#    print( id )
-    if ( length(id) %% 2 != 0 ) {
-      print( "Error 2" )
-      print( id )
-    }
-    tryCatch({
-#      print( paste0( id ) )
-      grph <<- igraph::add_edges( grph, id, weight=as.vector(unlist(links)) )
-#      print( paste0( links ) )
-#      grph <<- igraph::set_edge_attr( grph, 'weight', index=E(grph), value=as.vector(unlist(links)) )
-    })
     # clear lists
     initialize()
   }
@@ -222,7 +225,7 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
         mat <- cbind( enz, weights )
         keep_idx <- which( as.numeric(mat[,2]) == tCN )
         str_incident <- paste0( mat[keep_idx,1], collapse=',' )
-        str_weights <- paste0( mat[keep_idx,3], collapse=',' )
+        str_weights <- paste0( round(as.numeric(mat[keep_idx,3]),4), collapse=',' )
         grph <<- igraph::set.vertex.attribute(grph,'incident',IDv(grph,tCN),value=str_incident)
         grph <<- igraph::set.vertex.attribute(grph,'weights',IDv(grph,tCN),value=str_weights)
         
