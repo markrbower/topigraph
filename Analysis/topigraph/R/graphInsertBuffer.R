@@ -1,8 +1,7 @@
-graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, state_=NULL, conn_=NULL, P_table_=NULL ) {
+graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, state_=NULL, dbName_=NULL, P_table_=NULL ) {
   #' @export
   #' 
   #
-
   library( igraph )
 #  library( Rfast )
   
@@ -27,11 +26,11 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
   if ( is.null(dib) ) { # ... then a size is needed before the graph is dumped.
     dib <- topconnect::databaseInsertBuffer( topconnect::db('testProject'), 'test', c('name','gender','birth'), 3 )
   }
-  if ( is.null(conn_) ) { # ... then that's a problem
+  if ( is.null(dbName_) ) { # ... then that's a problem
     print( "Please supply a database connection" )
     return(-1)
   } else {
-    conn <- conn_
+    dbName <- dbName_
   }
   state <- state_
 
@@ -239,10 +238,12 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
           clusterid <- 0
           # Check the databasea
           query <- paste0( "select max(clusterid) as max_database from P;")
+          conn <- topconnect::db( dbName )
           rs <- DBI::dbGetQuery( conn, query )
           if ( nrow(rs) > 0 & !is.na(rs$max_database) ) {
             clusterid <- rs$max_database
           }
+          DBI::dbDisconnect( conn )
           # Check the graph
           grph_memberships <- unlist( get.vertex.attribute(grph,name='membership',index=V(grph)) )
           if ( !is.null(grph_memberships) & (length( which(!is.na(grph_memberships)) )>0 ) ) {
@@ -304,6 +305,7 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
     ancestors <- V(g)$name[ V(g)$name < t ]
     time_string <- paste0( ancestors, collapse=' OR time=')
     query <- paste0( 'select clusterid from ', P_table, ' where time=', time_string )
+    conn <- topconnect::db( dbName )
     rs <- DBI::dbGetQuery( conn, query )
     if ( nrow(rs) > 0 ) {
       clusterid <- as.numeric(names(sort(table(rs$clusterid),decreasing=TRUE)[1]))
@@ -313,6 +315,7 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
       rs <- DBI::dbGetQuery( conn, query )
       clusterid <- as.numeric( rs$max_id ) + 1
     }
+    DBI::dbDisconnect( conn )
     return( clusterid )
   }
 
