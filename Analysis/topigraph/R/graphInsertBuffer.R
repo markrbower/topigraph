@@ -9,10 +9,11 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
 #  source('~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/anEvent.R')
 #  source('~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/databaseInsertBuffer.R')
 #  load(file='~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/databaseInsertBuffer.Rcmp')
-  source('~/Dropbox/Documents/Concepts/2020_08_10_topigraph/topigraph/Analysis/topigraph/R/csv2vec.R')
+#  source('~/Dropbox/Documents/Concepts/2020_08_10_topigraph/topigraph/Analysis/topigraph/R/csv2vec.R')
 #  load(file='~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/csv2vec.Rcmp')
 #  source('~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/IDv.R')
 #  load(file='~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/IDv.Rcmp')
+  print( "Past sourcing")
   
   options(stringsAsFactors = FALSE);
 
@@ -97,7 +98,7 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
       tg <- V(grph)$name[ as.numeric(V(grph)$name) > (t_event-CW) & as.numeric(V(grph)$name) < (t_event-blackout) ]
       if ( length(tg) > 0 ) { # then there is some link to make
         # Compute, filter and link
-        wavevec <- sapply( seq(1,length(tg)), function(x) csv2vec(igraph::get.vertex.attribute( grph, 'waveform', IDv(grph,tg[x]))))
+        wavevec <- sapply( seq(1,length(tg)), function(x) topigraph:::csv2vec(igraph::get.vertex.attribute( grph, 'waveform', IDv(grph,tg[x]))))
 #        print( paste0( "nrow of wavevec: ", ncol(wavevec)))
         cc <- sapply( seq(1,ncol(wavevec)), function(x) cor( wavevec_event[mask], wavevec[mask,x] ) )
         weights <- sapply( seq(1,length(cc)), function(x) ((1+cc[x])/2) )
@@ -176,7 +177,7 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
     # Add links
     edge_list <- paste0( names(links), collapse=',')
     if ( nchar(edge_list) > 0 ) {
-      edge_vec <- csv2vec( edge_list )
+      edge_vec <- topigraph:::csv2vec( edge_list )
       if ( length(edge_vec) %% 2 != 0 ) {
         print( "Error 1" )
         print( edge_vec )
@@ -266,7 +267,7 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
       # Things needed:
       # waveform, peak, energy
       waveform <- igraph::get.vertex.attribute( grph, 'waveform', id_remove )
-      wavevec <- csv2vec( waveform )
+      wavevec <- topigraph:::csv2vec( waveform )
       energy <- sqrt( sum( wavevec * wavevec ) )
       peak <- ifelse( abs(max(wavevec)) > abs(min(wavevec)), max(wavevec), min(wavevec) )
       str_incident <- igraph::get.vertex.attribute(grph,'incident',id_remove)
