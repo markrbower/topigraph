@@ -1,4 +1,4 @@
-graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, state_=NULL, dbName_=NULL, P_table_=NULL ) {
+graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, state_=NULL, dbName_=NULL, P_table_=NULL, host='localhost', db_user_=NULL, password='' ) {
   #' @export
   #' 
   #
@@ -13,7 +13,7 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
 #  load(file='~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/csv2vec.Rcmp')
 #  source('~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/IDv.R')
 #  load(file='~/Dropbox/Documents/Concepts/2019_11_19_NetworkParameterOutlier/Analysis/NPO/R/IDv.Rcmp')
-  print( "Past sourcing")
+  #print( "Past sourcing")
   
   options(stringsAsFactors = FALSE);
 
@@ -28,12 +28,31 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
     dib <- topconnect::databaseInsertBuffer( topconnect::db('testProject'), 'test', c('name','gender','birth'), 3 )
   }
   if ( is.null(dbName_) ) { # ... then that's a problem
-    print( "Please supply a database connection" )
+    print( "Please supply a database name" )
     return(-1)
   } else {
     dbName <- dbName_
   }
+  #print( paste0( "GIB: dbName: ", dbName ) )
+  if ( is.null(db_user_) ) { # ... then that's a problem
+    print( "Please supply username" )
+    return(-1)
+  } else {
+    db_user <- db_user_
+  }
+  #print( paste0( "GIB: db_user: ", db_user ) )
+  
+  if ( is.null(P_table_) ) { # ... then that's a problem
+    print( "Please supply a signal table name" )
+    return(-1)
+  } else {
+    P_table <- P_table_
+  }
+
   state <- state_
+  
+  hostname = host
+  password = password
 
   correlationWindow <- cw
   CW <- cw
@@ -59,12 +78,14 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
     # and events that link to it, on the list or the graph.
 
     # Compute statistics on the center event
+    #print( "Into" )
     t_event <- as.numeric( names(event) )
     wavevec_event <- unname( unlist( event ) )
     energy_event <- sqrt( sum( wavevec_event[mask] * wavevec_event[mask] ) )
 
     # node names should be unique
     if ( !( names(event) %in% names(events) ) ) {
+      #print( "Inside" )
 #      str_incident_list <- list()
 #      str_incident_graph <- list()
 #      str_weights_list <- list()
@@ -76,6 +97,7 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
         possible_links_events <- which( te > blackout & te < CW )
         # link to events
         if ( length(possible_links_events) > 0 ) { # then there is some link to make
+          #print( "Possible links")
           # Compute, filter and link
           all_times <- as.numeric( names( events[possible_links_events] ) )
           wavevec <- t( sapply( events[possible_links_events], function(x) t(unname(as.numeric(unlist(x)))) ) )
@@ -87,6 +109,7 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
             # Add the links
 #            str_incident_list <- paste0( as.character(sapply( idxs, function(x) all_times[x])), collapse="," )
 #            str_weights_list <- paste0( as.character(sapply( idxs, function(x) weights[x])), collapse="," )
+            #print( "new links")
             new_links <- lapply( idxs, function(x) aLink( as.character(t_event), as.character(all_times[x]), weights[x]) )
             links <<- append( links, unlist(new_links) )
           } # length(idxs) > 0, which means there are valid indices to which to link.
@@ -95,8 +118,10 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
       
       # link to graph
       # Form links with events in the graph
+      #print( "start graph")
       tg <- V(grph)$name[ as.numeric(V(grph)$name) > (t_event-CW) & as.numeric(V(grph)$name) < (t_event-blackout) ]
       if ( length(tg) > 0 ) { # then there is some link to make
+        #print( "make links")
         # Compute, filter and link
         wavevec <- sapply( seq(1,length(tg)), function(x) topigraph:::csv2vec(igraph::get.vertex.attribute( grph, 'waveform', IDv(grph,tg[x]))))
 #        print( paste0( "nrow of wavevec: ", ncol(wavevec)))
@@ -104,7 +129,9 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
         weights <- sapply( seq(1,length(cc)), function(x) ((1+cc[x])/2) )
         ed <- sapply( seq(1,ncol(wavevec)), function(x) energy_event / sqrt(sum(wavevec[mask,x]*wavevec[mask,x])) )
         idxs <- which( (cc>cc_th | cc<(-1*cc_th)) & ed<ed_th & ed>(1/ed_th) ) # these are idx's in 'possible_links'
+        #print( "Computed")
         if ( length(idxs) > 0 ) {
+          #print( "add links")
           # Add the links
           weights <- sapply( idxs, function(x) ((1+cc[x])/2) )
 #          str_incident_graph <- paste0( as.character(sapply( idxs, function(x) tg[x])), collapse="," )
@@ -133,9 +160,11 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
 #      attr( event, 'weights' ) <- str_weights
       
       # Add new nodes to eventList.
+      #print( "append")
       events <<- append( events, event )
       rm(wavevec_event)
       rm(energy_event)
+      #print( "removed")
       
       # 2. When first and last are separated by CW, add nodes and links to the graph.
       # Realize that some events may be duplicates, out of order and/or already be in the graph.
@@ -143,28 +172,37 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
       delta <- as.numeric(names(events[nE])) - as.numeric(names(events[1]))
       #      print( paste0( "delta: ", delta ) )
       if ( delta > CW ) {
+        #print( "addEvents")
         addEventsAndLinksToGraph( events[order(as.numeric(unlist(names(events))),decreasing=FALSE)] )
+        #print( "added")
       }
       
       # 3. Find nodes that now have a complete CW, both before and after, and compute membership.
       # This is nodes with no membership value that are more than one CW away from the newest addition.
+      #print( "membership")
       idx_MMB <- which( V(grph)$name<(t_event-CW) & is.na(V(grph)$membership) )
       if ( length(idx_MMB) > 0 ) {
+        #print( "compute it")
         computeMembership( idx_MMB )
       }
+      #print( "done")
 
       # 4. Compute how many nodes will fall off the graph, into the "persist bucket" ("PB"). Call that number "nPB".
       tPersist <- t_event - 3 * correlationWindow
       idx_PB <- which(V(grph)$name<tPersist)
 #      print( paste0( "idx_PB: ", length(idx_PB ) ) )
+      #print( paste0( "GIB: ", length(idx_PB)))
       if ( length(idx_PB) >= dib$updateNumber() ) {
+        #print( "transfer")
         transferFromGraphToDIB( idx_PB )
+        #print( "done")
       }
       
     } # name is unique
   }
   
   addEventsAndLinksToGraph <- function( events_tmp ) {
+    #print( "In addEvents ...")
     # Add new nodes to the graph and then add the links
     grph_ <- graph(edges=NULL,n=NULL,directed=FALSE) %>%
       add_vertices( length(events_tmp), name=names(events_tmp), membership=NA, waveform=sapply(unname(events_tmp),function(x) paste0(x,collapse=',')), incident=NA, weights=NA )
@@ -176,7 +214,9 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
     grph_ <- NULL
     # Add links
     edge_list <- paste0( names(links), collapse=',')
+    #print( "edge_list")
     if ( nchar(edge_list) > 0 ) {
+      #print( "edge_list > 0")
       edge_vec <- topigraph:::csv2vec( edge_list )
       if ( length(edge_vec) %% 2 != 0 ) {
         print( "Error 1" )
@@ -191,6 +231,7 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
       tryCatch({
         #      print( paste0( id ) )
         if ( (length(edge_vec) %% 2 == 0) & (( length(id) %% 2 == 0 )) ) {
+          #print( "add edges")
           grph <<- igraph::add_edges( grph, id, weight=as.vector(unlist(links)) )
         }
         #      print( paste0( links ) )
@@ -202,6 +243,7 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
   }
   
   computeMembership <- function( idx_computeMembership ) {
+    #print( "In computeMembership" )
     for ( idx in idx_computeMembership ) {
       tCN <- as.numeric( get.vertex.attribute(grph,'name',idx) )
       # Check that membership has not already been computed
@@ -237,14 +279,23 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
           clusterid <- as.numeric(names(sort(table(clique_memberships[validids],useNA="no"),decreasing=TRUE)[1]))
         } else { # find the next, available clusterid from the database and grph.
           clusterid <- 0
-          # Check the databasea
-          query <- paste0( "select max(clusterid) as max_database from P;")
-          conn <- topconnect::db( dbName )
+          # Check the database
+          #print( "Find the current max clusterid in the database")
+          #print( paste0( "dbname: ", dbName ) )
+          #print( paste0( "hostname: ", hostname ) )
+          #print( paste0( "db_user: ", db_user ) )
+          #print( paste0( "password: ", password ) )
+          query <- paste0( "select max(clusterid) as max_database from ", P_table, ";")
+          conn <- topconnect::db( dbname=dbName, host=hostname, db_user=db_user, password=password )
+          #print( "Got a connection")
+          #print( paste0( "P_table: ", P_table ) )
           rs <- DBI::dbGetQuery( conn, query )
           if ( nrow(rs) > 0 & !is.na(rs$max_database) ) {
             clusterid <- rs$max_database
+            #print( clusterid )
           }
           DBI::dbDisconnect( conn )
+          #print( "Done finding max clusterid")          
           # Check the graph
           grph_memberships <- unlist( get.vertex.attribute(grph,name='membership',index=V(grph)) )
           if ( !is.null(grph_memberships) & (length( which(!is.na(grph_memberships)) )>0 ) ) {
@@ -257,10 +308,12 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
         grph <<- set.vertex.attribute( grph, 'membership', idx, clusterid )
       }
     }
+    #print( "Out computeMembership" )
   }
   
   transferFromGraphToDIB <- function( idx_PersistBucket ) {
     #    	start with  earliest, unassigned node, the Center Node (CN), and move forward until within CW of last node
+    #print( "Transferring")
     for ( id_remove in idx_PersistBucket ) {
       tCN <- as.numeric( str_incident <- igraph::get.vertex.attribute(grph,'name',id_remove) )
       clusterid <- as.numeric( str_incident <- igraph::get.vertex.attribute(grph,'membership',id_remove) )
@@ -306,7 +359,7 @@ graphInsertBuffer <- function( parameters, cw, cc, ed, gf, blackout, dib_=NULL, 
     ancestors <- V(g)$name[ V(g)$name < t ]
     time_string <- paste0( ancestors, collapse=' OR time=')
     query <- paste0( 'select clusterid from ', P_table, ' where time=', time_string )
-    conn <- topconnect::db( dbName )
+    conn <- topconnect::db( dbname=dbName, host=hostname, db_user=db_user, password=password )
     rs <- DBI::dbGetQuery( conn, query )
     if ( nrow(rs) > 0 ) {
       clusterid <- as.numeric(names(sort(table(rs$clusterid),decreasing=TRUE)[1]))
