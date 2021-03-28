@@ -1,2 +1,0 @@
-# NPO
-Noise Parameter Outlier
