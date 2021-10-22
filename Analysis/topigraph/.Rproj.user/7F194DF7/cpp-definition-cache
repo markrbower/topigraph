@@ -1,17 +1,1 @@
-[
-    {
-        "file": "/Users/markrbower/Dropbox/Documents/Concepts/template_using_RcppSkeleton/Analysis/usingRcppSkeleton/src/rcpp_hello_world.cpp",
-        "file_last_write": 1595791601.0,
-        "definitions": [
-            {
-                "usr": "c:@F@rcpp_hello_world#",
-                "kind": 6,
-                "parent_name": "",
-                "name": "rcpp_hello_world",
-                "file": "/Users/markrbower/Dropbox/Documents/Concepts/template_using_RcppSkeleton/Analysis/usingRcppSkeleton/src/rcpp_hello_world.cpp",
-                "line": 6,
-                "column": 6
-            }
-        ]
-    }
-]
+[]
